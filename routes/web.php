@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,9 +19,28 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return view('dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
+
+
+
+Route::group(['prefix'=> 'admin'], function () {
+    Route::get('/dashboard', function () { return view('admin.dashboard'); })->name('dashboard');
+    Route::get('product', [ProductsController::class,'index'])->name('product');
+    Route::get('/addproduct', function () { return view('admin.addproduct'); })->name('addproduct');
+   
+    Route::get('editproduct/{product_id}', [ProductsController::class,'edit'])->name('editproduct');
+    Route::post('store', [ProductsController::class, 'store'])->name('store');
+
+    
+});
+
+Route::get('/product', function () {
+    return view('product');
+})->name('product');
+
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
